@@ -1,0 +1,8 @@
+## My Project Proposal
+
+**What I'm building:** (one sentence)
+**Why I chose this:** (personal motivation - what problem does this solve for you?)
+**Core features:** (3-5 bullet points of what it will do)
+**What I don't know yet:** (honest list of things you'll need to figure out)
+
+Example: "I'm building a web app to find the nearest T stop from any Boston address. I want to add a map and real-time arrival times. I don't know yet how to display a Mapbox map in HTML or how the MBTA API structures its response."
