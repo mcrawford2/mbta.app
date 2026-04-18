@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Nearest MBTA Stop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="shell">
+        <section class="hero card">
+            <p class="subtitle">MBTA stop lookup</p>
+            <h1>Find the nearest MBTA stop</h1>
+            <p class="muted">Enter any place name and we will look up the closest MBTA stop.</p>
+
+            <form action="{{ url_for('home') }}" method="post" class="search-form">
+                <label for="place_name">Place name</label>
+                <input type="text" id="place_name" name="place_name" placeholder="Example: Boston Common" required>
+                <button type="submit">Find Stop</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

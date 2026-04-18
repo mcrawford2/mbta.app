@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTA Stop Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="shell">
+        <section class="card result-card">
+            <p class="subtitle">Search results</p>
+            <h1>Nearest MBTA stop</h1>
+            <p class="muted">Results for {{ place_name or 'your search' }}.</p>
+
+            {% if error %}
+                <div class="notice error">
+                    <strong>Sorry:</strong> {{ error }}
+                </div>
+            {% else %}
+                <div class="result-grid">
+                    <div>
+                        <span class="label">Nearest stop</span>
+                        <div class="value">{{ stop_name }}</div>
+                    </div>
+                    <div>
+                        <span class="label">Wheelchair accessibility</span>
+                        <div class="value">{{ 'Yes' if wheelchair_accessible else 'No' }}</div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <a class="back-link" href="{{ url_for('home') }}">Search another place</a>
+        </section>
+    </main>
+</body>
+</html>
