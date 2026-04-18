@@ -22,6 +22,7 @@
 - while organizing the new files into different folders, I asked AI "update any code after folder changes" so that all references were correct
 - I often asked AI to explain specific lines, especially if it was written by the AI, to ensure I had an understanding of how it all interacts
 - While testing user inputs, I often received the message: This page isn’t working. If the problem continues, contact the site owner. HTTP ERROR 405. I asked AI to help resolve this
+- I also recieved the errors: Cannot GET /helloflask/templates/%7B%7B%20url_for('results')%20%7D%7D and Cannot GET /results, and asked AI for help fixing it. 
 
 **What I didn't understand in the generated code:**
 - I didn't understand how the python file and HTML file were interacting
@@ -31,8 +32,10 @@
 
 
 **What I learned:**
-- 
+- Python/HTML interaction is a request-response loop handled by Flask. HTML collects user input, and Python does the work and returns the updated HTML
 - 'place = "Boston Common"' is a hardcoded test input for the main() function later. It allows the script to do one quick lookup without asking for user input, but only needs to run when main() is called.
 - {% ... %} runs template statements, like if/else, loops, and block endings. {{ ... }} prints a value into the page.
 - There are two HTML files because the app has two separate views: index.html is the home page with the form, and results.html is the results page shown after the POST request. This also keeps the form simple for users and helps with understanding errors. 
 - the error: HTTP ERROR 405 was due to mbta.py only allowing POST, rather than both POST and GET. 
+- the Cannot GET errors were related to the project’s intended launch flow and route structure. To fix the errors, I switched from testing under the templates folder to better Flask routes.
+    - I think that the main problem with these testing errors was that I was opening the app through Live Server, rather than through the Flask app.

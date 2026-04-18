@@ -120,13 +120,19 @@ def home():
 	)
 
 
+@app.route("/index.html", methods=["GET", "POST"])
+def index_html():
+	'''Compatibility route for browser testing from the template file.'''
+	return home()
+
+
 @app.route("/results", methods=["GET", "POST"])
 def results():
 	'''Handles form submissions and renders the results page.'''
-	if request.method == "GET":
+	place_name = request.values.get("place_name", "").strip()
+	if request.method == "GET" and not place_name:
 		return redirect(url_for("home"))
 
-	place_name = request.form.get("place_name", "").strip()
 	mapbox_token = os.getenv("MAPBOX_API_KEY")
 
 	if not mapbox_token:
@@ -170,6 +176,12 @@ def results():
 		stop_name=stop_name,
 		wheelchair_accessible=wheelchair_accessible,
 	)
+
+
+@app.route("/results.html", methods=["GET", "POST"])
+def results_html():
+	'''Compatibility route for browser testing from the template file.'''
+	return results()
 
 
 def main():
