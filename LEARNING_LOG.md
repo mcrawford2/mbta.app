@@ -30,7 +30,6 @@
 - I didn't understand {%...%} in the results.html file
 - Why AI generated two HTML files, rather than just using the one I had created
 
-
 **What I learned:**
 - Python/HTML interaction is a request-response loop handled by Flask. HTML collects user input, and Python does the work and returns the updated HTML
 - 'place = "Boston Common"' is a hardcoded test input for the main() function later. It allows the script to do one quick lookup without asking for user input, but only needs to run when main() is called.
@@ -39,3 +38,22 @@
 - the error: HTTP ERROR 405 was due to mbta.py only allowing POST, rather than both POST and GET. 
 - the Cannot GET errors were related to the project’s intended launch flow and route structure. To fix the errors, I switched from testing under the templates folder to better Flask routes.
     - I think that the main problem with these testing errors was that I was opening the app through Live Server, rather than through the Flask app.
+
+
+## Date: 2026-04-19
+
+**What I asked AI to do:**
+- I asked AI for help with adding the Mapbox map. I was unsure how to start building this because of the number of files I am using, and I didn't kno where this code needed to be.
+
+**What I didn't understand in the generated code:**
+- for the Mapbox map integration in results.html, I was not familiar with many pieces of the code.
+    - style: "mapbox://styles/mapbox/streets-v12"
+    - center: stopCoords
+    - zoom: 13 
+    - map.addControl(new mapboxgl.NavigationControl(), "top-right")
+
+**What I learned:**
+- style: "mapbox://styles/mapbox/streets-v12" - uses a built-in Mapbox style to set visual style
+- center: stopCoords -  initial center of the map, and is adjusted later to fit both points
+- zoom: 13 - initial zoom level, and is be adjusted later to fit both points
+- map.addControl(new mapboxgl.NavigationControl(), "top-right") - adds zoom and rotation controls to the map for UI

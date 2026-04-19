@@ -51,13 +51,23 @@ def get_nearest_stop(latitude: float, longitude: float):
 		raise ValueError("No nearby MBTA stops were found.")
 
 	stop = data["data"][0]["attributes"] #API returns the first/nearest stop from the list with [0]. Then we access the "attributes" key to get the details of that stop.
-	return stop["name"], stop.get("wheelchair_boarding") == 1
+	return {
+		"name": stop["name"],
+		"wheelchair_accessible": stop.get("wheelchair_boarding") == 1,
+		"latitude": stop.get("latitude"),
+		"longitude": stop.get("longitude"),
+	}
 
 
 def find_stop_nearby(place_name: str, mapbox_token: str):
 	'''Find the nearest MBTA stop to a place name. Combines get_location and get_nearest_stop.'''
 	latitude, longitude = get_location(place_name, mapbox_token) #
-	return get_nearest_stop(latitude, longitude)
+	stop = get_nearest_stop(latitude, longitude)
+	return {
+		"place_latitude": latitude,
+		"place_longitude": longitude,
+		"stop": stop,
+	}
 
 #web
 
@@ -92,7 +102,7 @@ def home():
 		)
 
 	try:
-		stop_name, wheelchair_accessible = find_stop_nearby(place_name, mapbox_token)
+		result = find_stop_nearby(place_name, mapbox_token)
 	except HTTPError as e:
 		return render_template(
 			"results.html",
@@ -115,8 +125,13 @@ def home():
 	return render_template(
 		"results.html",
 		place_name=place_name,
-		stop_name=stop_name,
-		wheelchair_accessible=wheelchair_accessible,
+		stop_name=result["stop"]["name"],
+		wheelchair_accessible=result["stop"]["wheelchair_accessible"],
+		place_latitude=result["place_latitude"],
+		place_longitude=result["place_longitude"],
+		stop_latitude=result["stop"]["latitude"],
+		stop_longitude=result["stop"]["longitude"],
+		mapbox_public_token=mapbox_token,
 	)
 
 
@@ -150,7 +165,7 @@ def results():
 		)
 
 	try:
-		stop_name, wheelchair_accessible = find_stop_nearby(place_name, mapbox_token)
+		result = find_stop_nearby(place_name, mapbox_token)
 	except HTTPError as e:
 		return render_template(
 			"results.html",
@@ -173,8 +188,13 @@ def results():
 	return render_template(
 		"results.html",
 		place_name=place_name,
-		stop_name=stop_name,
-		wheelchair_accessible=wheelchair_accessible,
+		stop_name=result["stop"]["name"],
+		wheelchair_accessible=result["stop"]["wheelchair_accessible"],
+		place_latitude=result["place_latitude"],
+		place_longitude=result["place_longitude"],
+		stop_latitude=result["stop"]["latitude"],
+		stop_longitude=result["stop"]["longitude"],
+		mapbox_public_token=mapbox_token,
 	)
 
 
@@ -194,10 +214,10 @@ def main():
 	
 	try:
 		print(f"Finding nearest stop to {place}...")
-		stop_name, wheelchair_accessible = find_stop_nearby(place, mapbox_token)
+		result = find_stop_nearby(place, mapbox_token)
 		
-		print(f"Stop: {stop_name}")
-		print(f"Wheelchair accessible: {wheelchair_accessible}")
+		print(f"Stop: {result['stop']['name']}")
+		print(f"Wheelchair accessible: {result['stop']['wheelchair_accessible']}")
 	except HTTPError as e:
 		print(f"API Error: {e.code} {e.reason}")
 	except ValueError as e:

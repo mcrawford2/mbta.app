@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MBTA Stop Results</title>
     <link rel="stylesheet" href="../static/styles.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet">
 </head>
 <body>
     <main class="shell">
@@ -28,10 +29,66 @@
                         <div class="value">{{ 'Yes' if wheelchair_accessible else 'No' }}</div>
                     </div>
                 </div>
+
+                {% if mapbox_public_token and place_latitude and place_longitude and stop_latitude and stop_longitude %} <!--checking that required map values exist-->
+                    <section class="map-panel">
+                        <span class="label">Map</span>
+                        <div
+                            id="map"
+                            aria-label="Map showing the searched place and nearest MBTA stop"
+                            data-mapbox-token="{{ mapbox_public_token }}"
+                            data-place-lat="{{ place_latitude }}"
+                            data-place-lng="{{ place_longitude }}"
+                            data-stop-lat="{{ stop_latitude }}"
+                            data-stop-lng="{{ stop_longitude }}"
+                            data-stop-name="{{ stop_name }}"
+                        ></div>
+                    </section>
+                {% endif %}
             {% endif %}
 
             <a class="back-link" href="index.html">Search another place</a>
         </section>
     </main>
+
+    {% if mapbox_public_token and place_latitude and place_longitude and stop_latitude and stop_longitude %}
+        <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script> <!--where to load file from-->
+        <script>
+            const mapEl = document.getElementById("map");
+            mapboxgl.accessToken = mapEl.dataset.mapboxToken;
+
+            const placeCoords = [
+                Number.parseFloat(mapEl.dataset.placeLng),
+                Number.parseFloat(mapEl.dataset.placeLat)
+            ];
+            const stopCoords = [
+                Number.parseFloat(mapEl.dataset.stopLng),
+                Number.parseFloat(mapEl.dataset.stopLat)
+            ];
+
+            const map = new mapboxgl.Map({
+                container: "map",
+                style: "mapbox://styles/mapbox/streets-v12", // using a built-in Mapbox style to set visual style
+                center: stopCoords, // initial center of the map (will be adjusted later to fit both points)
+                zoom: 13 // initial zoom level (will be adjusted later to fit both points)
+            });
+
+            map.addControl(new mapboxgl.NavigationControl(), "top-right"); // adds zoom and rotation controls to the map for UI
+            new mapboxgl.Marker({ color: "#3563d6" })
+                .setLngLat(placeCoords)
+                .setPopup(new mapboxgl.Popup().setText("Searched place"))
+                .addTo(map);
+
+            new mapboxgl.Marker({ color: "#d62f2f" })
+                .setLngLat(stopCoords)
+                .setPopup(new mapboxgl.Popup().setText(`Nearest MBTA stop: ${mapEl.dataset.stopName}`))
+                .addTo(map);
+
+            const bounds = new mapboxgl.LngLatBounds(); //to fit both points
+            bounds.extend(placeCoords);
+            bounds.extend(stopCoords);
+            map.fitBounds(bounds, { padding: 80, maxZoom: 14 });
+        </script>
+    {% endif %}
 </body>
 </html>
